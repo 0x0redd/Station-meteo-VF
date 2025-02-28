@@ -10,7 +10,13 @@ interface ET0SummaryCardProps {
   error?: Error;
 }
 
-export function ET0SummaryCard({ data, isLoading, error }: ET0SummaryCardProps) {
+const staticET0Summary: ET0Summary = {
+  dailyAverage: 0.35,
+  trend: "increasing",
+  comparisonToYesterday: 5.2
+};
+
+export function ET0SummaryCard({ data = staticET0Summary, isLoading = false, error }: ET0SummaryCardProps) {
   if (error) {
     return (
       <Card>

@@ -1,30 +1,38 @@
 "use client";
 
-import { useET0Predictions, useET0Summary } from "@/lib/api/weather-api";
-import { ET0Chart } from "./et0-chart";
 import { ET0SummaryCard } from "./et0-summary-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Droplet, Loader2 } from "lucide-react";
+import { ET0Chart } from "./et0-chart";
+
+const staticET0Summary = {
+  dailyAverage: 0.35,
+  trend: "increasing" as "increasing" | "decreasing" | "stable",
+  comparisonToYesterday: 5.2
+};
+
+const staticET0Predictions = Array.from({ length: 24 }, (_, i) => ({
+  timestamp: new Date(Date.now() + i * 60 * 60 * 1000).toISOString(),
+  value: 1.32446 + Math.random() * (4.23637 - 1.32446),
+  confidenceLow: 1.32446 + Math.random() * (4.23637 - 1.32446) * 0.8,
+  confidenceHigh: 1.32446 + Math.random() * (4.23637 - 1.32446) * 1.2
+}));
 
 export function ET0Prediction() {
-  const { 
-    data: predictionsData, 
-    isLoading: isPredictionsLoading, 
-    error: predictionsError 
-  } = useET0Predictions();
-  
-  const { 
-    data: summaryData, 
-    isLoading: isSummaryLoading, 
-    error: summaryError 
-  } = useET0Summary();
+  const isSummaryLoading = false;
+  const summaryError = null;
+  const summaryData = { data: staticET0Summary };
+
+  const isPredictionsLoading = false;
+  const predictionsError = null;
+  const predictionsData = { data: staticET0Predictions };
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <ET0SummaryCard 
-        data={summaryData?.data} 
+        data={summaryData.data} 
         isLoading={isSummaryLoading} 
-        error={summaryError as Error} 
+        error={summaryError as unknown as Error} 
       />
       <div className="grid gap-4">
         <Card>
@@ -37,7 +45,7 @@ export function ET0Prediction() {
               <div className="flex items-center justify-center h-[100px]">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
-            ) : summaryData?.data ? (
+            ) : summaryData.data ? (
               <div className="space-y-4">
                 <div className="text-lg font-medium">
                   {summaryData.data.dailyAverage > 0.4 
@@ -68,9 +76,9 @@ export function ET0Prediction() {
         </Card>
       </div>
       <ET0Chart 
-        data={predictionsData?.data} 
+        data={predictionsData.data} 
         isLoading={isPredictionsLoading} 
-        error={predictionsError as Error} 
+        error={predictionsError as unknown as Error} 
       />
     </div>
   );

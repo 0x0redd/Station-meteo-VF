@@ -11,9 +11,6 @@ import {
   WeatherData 
 } from "./types";
 
-// Mock API endpoints for development
-const API_BASE_URL = "https://api.weatherdashboard.example";
-
 // API error handling
 class ApiError extends Error {
   status: number;
@@ -55,7 +52,7 @@ export function useCurrentWeather() {
     queryKey: ["currentWeather"],
     queryFn: () => 
       fetchWithErrorHandling<ApiResponse<WeatherData>>(
-        `${API_BASE_URL}/weather/current`
+        `/api/weather`
       ),
     // Mock data for development
     placeholderData: {
@@ -80,7 +77,7 @@ export function useET0Predictions() {
     queryKey: ["et0Predictions"],
     queryFn: () => 
       fetchWithErrorHandling<ApiResponse<ET0Prediction[]>>(
-        `${API_BASE_URL}/et0/predictions`
+        `/api/et0`
       ),
     // Mock data for development
     placeholderData: {
@@ -100,7 +97,7 @@ export function useET0Summary() {
     queryKey: ["et0Summary"],
     queryFn: () => 
       fetchWithErrorHandling<ApiResponse<ET0Summary>>(
-        `${API_BASE_URL}/et0/summary`
+        `/api/et0`
       ),
     // Mock data for development
     placeholderData: {
@@ -124,7 +121,7 @@ export function useHistoricalData(
     queryKey: ["historicalData", filter, page, pageSize],
     queryFn: () => 
       fetchWithErrorHandling<ApiResponse<PaginatedResponse<HistoricalDataPoint>>>(
-        `${API_BASE_URL}/historical?startDate=${filter.startDate.toISOString()}&endDate=${filter.endDate.toISOString()}&aggregation=${filter.aggregation}&page=${page}&pageSize=${pageSize}`
+        `/api/historical?startDate=${filter.startDate.toISOString()}&endDate=${filter.endDate.toISOString()}&aggregation=${filter.aggregation}&page=${page}&pageSize=${pageSize}`
       ),
     // Mock data for development
     placeholderData: {
@@ -155,7 +152,7 @@ export function useExportHistoricalData(filter: HistoricalDataFilter, format: 'c
     queryKey: ["exportHistoricalData", filter, format],
     queryFn: () => 
       fetchWithErrorHandling<ApiResponse<string>>(
-        `${API_BASE_URL}/historical/export?startDate=${filter.startDate.toISOString()}&endDate=${filter.endDate.toISOString()}&aggregation=${filter.aggregation}&format=${format}`
+        `/api/historical/export?startDate=${filter.startDate.toISOString()}&endDate=${filter.endDate.toISOString()}&aggregation=${filter.aggregation}&format=${format}`
       ),
     enabled: false, // Only run when explicitly requested
     // Mock data for development

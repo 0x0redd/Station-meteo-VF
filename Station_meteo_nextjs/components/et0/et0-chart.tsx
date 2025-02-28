@@ -21,7 +21,14 @@ interface ET0ChartProps {
   error?: Error;
 }
 
-export function ET0Chart({ data, isLoading, error }: ET0ChartProps) {
+const staticET0Predictions = Array.from({ length: 24 }, (_, i) => ({
+  timestamp: new Date(Date.now() + i * 60 * 60 * 1000).toISOString(),
+  value: 1.32446 + Math.random() * (4.23637 - 1.32446),
+  confidenceLow: 1.32446 + Math.random() * (4.23637 - 1.32446) * 0.8,
+  confidenceHigh: 1.32446 + Math.random() * (4.23637 - 1.32446) * 1.2
+}));
+
+export function ET0Chart({ data = staticET0Predictions, isLoading = false, error }: ET0ChartProps) {
   if (error) {
     return (
       <Card>
