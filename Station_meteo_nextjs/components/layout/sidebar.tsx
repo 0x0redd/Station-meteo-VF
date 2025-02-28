@@ -61,7 +61,7 @@ export function Sidebar({ className, setOpen }: SidebarProps) {
 
   return (
     <div className={cn("pb-12", className)}>
-      <div className="space-y-4 py-4">
+      <div className="space-y-4 py-4 fixed top-[4rem] left-0 h-full">
         <div className="px-3 py-2">
           <div className="space-y-1">
             {routes.map((route) => (
