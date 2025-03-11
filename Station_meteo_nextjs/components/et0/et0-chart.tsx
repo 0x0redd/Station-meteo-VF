@@ -1,104 +1,127 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ET0Prediction } from "@/lib/api/types";
-import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { 
   Area, 
   AreaChart, 
   CartesianGrid, 
-  Legend, 
   ResponsiveContainer, 
   Tooltip, 
   XAxis, 
   YAxis 
 } from "recharts";
+import { format, parseISO } from "date-fns";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
+
+interface ET0PredictionData {
+  id: number;
+  date: string;
+  avgTemp: number;
+  avgHumidity: number;
+  avgSolarRadiation: number;
+  predictedET0: number;
+}
 
 interface ET0ChartProps {
-  data?: ET0Prediction[];
+  data: ET0PredictionData[];
   isLoading: boolean;
   error?: Error;
 }
 
-const staticET0Predictions = Array.from({ length: 24 }, (_, i) => ({
-  timestamp: new Date(Date.now() + i * 60 * 60 * 1000).toISOString(),
-  value: 1.32446 + Math.random() * (4.23637 - 1.32446),
-  confidenceLow: 1.32446 + Math.random() * (4.23637 - 1.32446) * 0.8,
-  confidenceHigh: 1.32446 + Math.random() * (4.23637 - 1.32446) * 1.2
-}));
-
-export function ET0Chart({ data = staticET0Predictions, isLoading = false, error }: ET0ChartProps) {
+export function ET0Chart({ data, isLoading, error }: ET0ChartProps) {
   if (error) {
     return (
-      <Card>
+      <Card className="col-span-2">
         <CardHeader>
-          <CardTitle>ET₀ Predictions</CardTitle>
+          <CardTitle>ET₀ Predictions (24 Hours)</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center h-[400px]">
-          <p className="text-destructive">Error loading ET₀ data</p>
+        <CardContent className="flex flex-col items-center justify-center h-[300px]">
+          <p className="text-destructive">Error loading ET₀ predictions</p>
           <p className="text-sm text-muted-foreground">{error.message}</p>
         </CardContent>
       </Card>
     );
   }
 
-  const chartData = data?.map(item => ({
-    time: format(new Date(item.timestamp), "HH:mm"),
-    value: parseFloat(item.value.toFixed(2)),
-    confidenceLow: parseFloat(item.confidenceLow.toFixed(2)),
-    confidenceHigh: parseFloat(item.confidenceHigh.toFixed(2)),
-    timestamp: item.timestamp,
+  // Format data for the chart
+  const chartData = data.map(item => ({
+    time: format(parseISO(item.date), "HH:mm"),
+    date: item.date,
+    value: item.predictedET0,
+    temperature: item.avgTemp,
+    humidity: item.avgHumidity,
+    solarRadiation: item.avgSolarRadiation
   }));
 
+  // Chart configuration
+  const chartConfig = {
+    et0: {
+      label: "ET₀",
+      color: "hsl(var(--primary))"
+    },
+    temperature: {
+      label: "Temperature",
+      color: "hsl(var(--destructive))"
+    },
+    humidity: {
+      label: "Humidity",
+      color: "hsl(var(--secondary))"
+    }
+  };
+
   return (
-    <Card className="col-span-full">
+    <Card className="col-span-2">
       <CardHeader>
         <CardTitle>ET₀ Predictions (24 Hours)</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-[400px]">
+          <div className="flex flex-col items-center justify-center h-[300px]">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">Loading ET₀ prediction data...</p>
+            <p className="mt-2 text-sm text-muted-foreground">Loading ET₀ predictions...</p>
           </div>
         ) : chartData && chartData.length > 0 ? (
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-[300px] w-full">
+            <ChartContainer config={chartConfig} className="h-[300px]">
               <AreaChart
                 data={chartData}
-                margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="time" 
-                  className="text-xs text-muted-foreground"
                   tick={{ fontSize: 12 }}
                   tickMargin={10}
                 />
                 <YAxis 
-                  className="text-xs text-muted-foreground"
                   tick={{ fontSize: 12 }}
                   tickMargin={10}
                   label={{ 
                     value: "ET₀ (mm/hour)", 
                     angle: -90, 
                     position: "insideLeft",
-                    className: "text-xs text-muted-foreground fill-muted-foreground"
+                    style: { textAnchor: 'middle', fontSize: '12px' }
                   }}
                 />
-                <Tooltip
+                <ChartTooltip 
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
                         <div className="rounded-lg border bg-background p-2 shadow-md">
-                          <p className="text-sm font-medium">{format(new Date(data.timestamp), "MMM d, HH:mm")}</p>
+                          <p className="text-sm font-medium">{format(parseISO(data.date), "MMM d, yyyy HH:mm")}</p>
                           <p className="text-sm text-muted-foreground">
-                            ET₀: <span className="font-medium">{data.value} mm/hour</span>
+                            ET₀: <span className="font-medium">{data.value.toFixed(2)} mm/hour</span>
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            Confidence Interval: {data.confidenceLow} - {data.confidenceHigh}
+                          <p className="text-sm text-muted-foreground">
+                            Temperature: <span className="font-medium">{data.temperature.toFixed(1)}°C</span>
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Humidity: <span className="font-medium">{data.humidity}%</span>
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Solar Radiation: <span className="font-medium">{data.solarRadiation.toFixed(1)} W/m²</span>
                           </p>
                         </div>
                       );
@@ -106,36 +129,18 @@ export function ET0Chart({ data = staticET0Predictions, isLoading = false, error
                     return null;
                   }}
                 />
-                <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="confidenceHigh"
-                  stackId="1"
-                  stroke="transparent"
-                  fill="hsl(var(--chart-1) / 0.2)"
-                  name="Confidence High"
-                />
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stackId="2"
-                  stroke="hsl(var(--chart-1))"
-                  fill="hsl(var(--chart-1) / 0.7)"
-                  name="ET₀ Prediction"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="confidenceLow"
-                  stackId="3"
-                  stroke="transparent"
-                  fill="hsl(var(--chart-1) / 0.1)"
-                  name="Confidence Low"
+                  name="et0"
+                  stroke={chartConfig.et0.color}
+                  fill={`${chartConfig.et0.color}50`}
                 />
               </AreaChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-[400px]">
+          <div className="flex flex-col items-center justify-center h-[300px]">
             <p className="text-muted-foreground">No ET₀ prediction data available</p>
           </div>
         )}

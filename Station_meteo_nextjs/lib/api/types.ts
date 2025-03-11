@@ -21,6 +21,7 @@ export type WeatherCondition =
 
 // ET₀ Prediction Types
 export interface ET0Prediction {
+  [x: string]: string | number | Date;
   timestamp: string;
   value: number;
   confidenceLow: number;

@@ -19,48 +19,79 @@ This repository is organized into the following main directories:
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python (FastAPI / Flask)
-- **Machine Learning:** NumPy, Pandas, Scikit-learn
+- **Backend:** Java 17 (Spring Boot)
+- **Machine Learning:** Python, NumPy, Pandas, Scikit-learn
 - **Frontend:** Next.js (React, TypeScript)
-- **Database:** PostgreSQL / MongoDB
+- **Database:** MySQL
 - **Hardware:** Sensors for temperature, humidity, wind speed, and solar radiation
 
-## 🛆 Installation
+## 🛆 Installation & Setup
 
-1️⃣ Clone the repository:
+### Prerequisites
 
+1️⃣ **Java Development Kit (JDK) 17**
+- Download and install [OpenJDK 17](https://adoptium.net/)
+- Set JAVA_HOME environment variable to your JDK installation path
+
+2️⃣ **Maven**
+- Download and install [Apache Maven](https://maven.apache.org/download.cgi)
+- Ensure Maven is added to your system's PATH
+
+3️⃣ **Python Environment**
+- Python 3.8 or higher
+- Virtual environment setup for ET0 model
+
+4️⃣ **MySQL Database**
+- Install [MySQL Server](https://dev.mysql.com/downloads/mysql/)
+- Create a database named 'stationmeteo'
+
+### Running the Application
+
+1️⃣ **Clone the repository:**
 ```bash
 git clone https://github.com/0x0redd/Station-meteo-VF.git
 cd Station-meteo-VF
 ```
 
-2️⃣ Install dependencies for backend:
-
+2️⃣ **Quick Start (Using run script)**
 ```bash
-cd Station_API
-pip install -r requirements.txt
+# Simply run the batch file
+run.bat
+```
+This script will:
+- Start the Spring Boot service
+- Launch the ET0 prediction model in a separate window
+- Handle all necessary environment checks
+
+3️⃣ **Manual Setup (Alternative method)**
+
+For Backend:
+```bash
+cd API/weatherapi
+mvn clean install
+mvn spring-boot:run
 ```
 
-3️⃣ Run the backend:
-
+For ET0 Model:
 ```bash
-uvicorn main:app --reload
+cd Model_ET0
+.\venv\Scripts\activate
+python et0_predictor.py
 ```
 
-4️⃣ Install and run the frontend:
-
+For Frontend:
 ```bash
-cd ../Station_meteo_nextjs
+cd Station_meteo_nextjs
 npm install
 npm run dev
 ```
 
 ## 📊 Usage
 
-- The API collects real-time weather data and stores it in a database.
-- The ET₀ model predicts evapotranspiration based on weather conditions.
-- The irrigation system adjusts water supply automatically based on ET₀ values.
-- The Next.js frontend provides a dashboard to monitor weather conditions and irrigation status.
+- Access the API at `http://localhost:8080`
+- The ET₀ model runs predictions automatically
+- Frontend dashboard available at `http://localhost:3000`
+- Monitor MySQL database for data storage
 
 ## 🛠️ Contributing
 
@@ -74,7 +105,7 @@ This project is licensed under the **MIT License**.
 
 - **Author:** [0x0redd](https://github.com/0x0redd)
 - **Email:** 0x0red.me@gmail.com
-- **LinkedIn:** [CSC FSM](https://www.linkedin.com/in/othmane-ferrah-148a0b160/) 
+- **LinkedIn:** [Ferrah othmane ](https://www.linkedin.com/in/othmane-ferrah-148a0b160/) 
 
 ---
 🌿 *Smart irrigation for a sustainable future!* 🚀

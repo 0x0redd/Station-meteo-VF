@@ -1,7 +1,9 @@
 package org.sid.weatherapi.Service;
 
 import org.sid.weatherapi.Entity.weatherStation;
+import org.sid.weatherapi.Entity.ET0;
 import org.sid.weatherapi.Repository.weatherRepository;
+import org.sid.weatherapi.Repository.ET0Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class weatherService {
 
     @Autowired
     private weatherRepository weatherRepo;
+
+    @Autowired
+    private ET0Repository et0Repo;
 
     public weatherStation saveDetails(weatherStation ws) {
         // Ensure date is set (uses server time)
@@ -48,5 +53,9 @@ public class weatherService {
 
     public List<weatherStation> getWeatherStationsByDateRange(Timestamp minDate, Timestamp maxDate) {
         return weatherRepo.findByCreatedAtBetween(minDate, maxDate);
+    }
+
+    public List<ET0> getET0Predictions() {
+        return et0Repo.findAll();
     }
 }

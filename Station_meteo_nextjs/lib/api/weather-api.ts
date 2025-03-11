@@ -162,3 +162,23 @@ export function useExportHistoricalData(filter: HistoricalDataFilter, format: 'c
     }
   });
 }
+
+// Add this function to fetch all weather stations
+export function useAllWeatherStations() {
+  return useQuery({
+    queryKey: ['weatherStations'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('http://localhost:8080/getAllWeatherStations');
+        if (!response.ok) {
+          throw new Error('Failed to fetch weather stations');
+        }
+        const data = await response.json();
+        return { data };
+      } catch (error) {
+        console.error('Error fetching weather stations:', error);
+        throw error;
+      }
+    }
+  });
+}

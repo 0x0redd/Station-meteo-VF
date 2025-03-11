@@ -58,59 +58,75 @@ export function WeatherCard({ data, isLoading, error, className }: WeatherCardPr
     );
   }
 
+  if (isLoading) {
+    return (
+      <Card className={cn("h-full", className)}>
+        <CardHeader>
+          <CardTitle>Weather Station</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-[200px]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <p className="mt-2 text-sm text-muted-foreground">Loading weather data...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!data) {
+    return (
+      <Card className={cn("h-full", className)}>
+        <CardHeader>
+          <CardTitle>Weather Station</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-[200px]">
+          <p className="text-muted-foreground">No weather data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className={cn("h-full", className)}>
       <CardHeader>
         <CardTitle>Current Weather</CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-[200px]">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">Loading weather data...</p>
-          </div>
-        ) : data ? (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {getWeatherIcon(data.condition)}
-                <div>
-                  <p className="text-3xl font-bold">{data.temperature.toFixed(1)}°C</p>
-                  <p className="text-muted-foreground capitalize">
-                    {data.condition.replace(/([A-Z])/g, ' $1').trim()}
-                  </p>
-                </div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {getWeatherIcon(data.condition)}
+              <div>
+                <p className="text-3xl font-bold">{data.temperature?.toFixed(1) || "N/A"}°C</p>
+                <p className="text-muted-foreground capitalize">
+                  {data.condition?.replace(/([A-Z])/g, ' $1').trim() || "Unknown Condition"}
+                </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Humidity</p>
-                <p className="text-lg font-medium">{data.humidity}%</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Solar Radiation</p>
-                <p className="text-lg font-medium">{data.solarRadiation} W/m²</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Wind</p>
-                <p className="text-lg font-medium">{data.windSpeed} km/h</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Rainfall</p>
-                <p className="text-lg font-medium">{data.rainfall} mm</p>
-              </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Humidity</p>
+              <p className="text-lg font-medium">{data.humidity || "N/A"}%</p>
             </div>
-            <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground">
-                Last updated: {format(new Date(data.timestamp), "MMM d, yyyy HH:mm")}
-              </p>
+            <div>
+              <p className="text-sm text-muted-foreground">Solar Radiation</p>
+              <p className="text-lg font-medium">{data.solarRadiation || "N/A"} W/m²</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Wind</p>
+              <p className="text-lg font-medium">{data.windSpeed || "N/A"} km/h</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Rainfall</p>
+              <p className="text-lg font-medium">{data.rainfall || "N/A"} mm</p>
             </div>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-[200px]">
-            <p className="text-muted-foreground">No weather data available</p>
+          <div className="pt-2 border-t">
+            <p className="text-xs text-muted-foreground">
+              Last updated: {data.timestamp ? format(new Date(data.timestamp), "MMM d, yyyy HH:mm") : "N/A"}
+            </p>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );

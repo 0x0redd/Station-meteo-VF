@@ -1,6 +1,7 @@
 package org.sid.weatherapi.Controller;
 
 import org.sid.weatherapi.Entity.weatherStation;
+import org.sid.weatherapi.Entity.ET0;
 import org.sid.weatherapi.Service.weatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,10 @@ public class weatherController {
             @RequestParam("minDate") Timestamp minDate,
             @RequestParam("maxDate") Timestamp maxDate) {
         return ws.getWeatherStationsByDateRange(minDate, maxDate);
+    }
+
+    @GetMapping("/getET0prediction")
+    public List<ET0> getET0Predictions() {
+        return ws.getET0Predictions();
     }
 }
