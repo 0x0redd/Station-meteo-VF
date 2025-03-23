@@ -103,9 +103,6 @@ This project is licensed under the **MIT License**.
 
 ## 📞 Contact
 
-- **Author:** [0x0redd](https://github.com/0x0redd)
-- **Email:** 0x0red.me@gmail.com
-- **LinkedIn:** [Ferrah othmane ](https://www.linkedin.com/in/othmane-ferrah-148a0b160/) 
 
 ---
 🌿 *Smart irrigation for a sustainable future!* 🚀
