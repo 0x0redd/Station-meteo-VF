@@ -12,15 +12,15 @@ export default function WeatherStationPage() {
           title="Weather Station" 
           description="Real-time weather data from your monitoring station"
         />
-        <div className="grid gap-4 md:grid-cols-2">
-          <WeatherForecast />
-          <SatelliteImagery />
-        </div>
-        {/* Current Weather Section */}
         <WeatherStation />
-        
-        {/* Forecast and Satellite Section */}
-        
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="w-full md:w-1/2">
+            <WeatherForecast />
+          </div>
+          <div className="w-full md:w-1/2">
+            <SatelliteImagery />
+          </div>
+        </div>
       </div>
     </Shell>
   );
